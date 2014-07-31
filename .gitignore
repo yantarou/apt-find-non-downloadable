@@ -1,2 +1,5 @@
 .idea
-
+debian/apt-find-non-downloadable.debhelper.log
+debian/apt-find-non-downloadable.substvars
+debian/apt-find-non-downloadable/
+debian/tmp/

@@ -1,0 +1,4 @@
+#!/usr/bin/dh-exec
+apt-find-non-downloadable.py => /usr/bin/apt-find-non-downloadable
+
+#apt-find-non-downloadable.py usr/bin/apt-find-non-downloadable

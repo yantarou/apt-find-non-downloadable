@@ -1,0 +1,5 @@
+apt-find-non-downloadable (0.1) UNRELEASED; urgency=medium
+
+  * Initial release.
+
+ -- Jan Hilberath <jan@hilberath.de>  Wed, 23 Jul 2014 09:46:51 +0900
