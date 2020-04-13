@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 #   apt-find-non-downloadable - Find installed packages that are not downloadable via configured APT sources.
 #
-#   Copyright (C) 2014   Jan Hilberath <jan@hilberath.de>
+#   Copyright (C) 2014-2020   Jan Hilberath <jan@hilberath.de>
 #
 #   This program is free software; you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -23,6 +23,8 @@ import apt
 import argparse
 import sys
 
+__version__ = '0.2.0'
+
 
 class InstalledFilter(apt.cache.Filter):
     def apply(self, pkg):
@@ -33,8 +35,9 @@ def main():
     arg_parser = argparse.ArgumentParser(
         description='Find installed packages that are not downloadable via configured APT sources.'
     )
-    arg_parser = argparse.ArgumentParser(version='%(prog)s 0.1.0')
+    arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("-s", "--silent", help="be silent, only print found package's names", action="store_true")
+    arg_parser.add_argument('-v", "--version', action='version', version='%(prog)s ' + __version__)
     args = arg_parser.parse_args()
 
     cache = apt.Cache(progress=None, rootdir=None, memonly=True)

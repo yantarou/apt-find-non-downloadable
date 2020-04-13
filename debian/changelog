@@ -1,4 +1,10 @@
-apt-find-non-downloadable (0.1) UNRELEASED; urgency=medium
+apt-find-non-downloadable (0.2) unstable; urgency=medium
+
+  * Update to Python 3.
+
+ -- Jan Hilberath <jan@hilberath.de>  Mon, 13 Apr 2020 10:27:20 +0900
+
+apt-find-non-downloadable (0.1) unstable; urgency=medium
 
   * Initial release.
 

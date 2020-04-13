@@ -2,11 +2,11 @@ Source: apt-find-non-downloadable
 Maintainer: Jan Hilberath <jan@hilberath.de>
 Section: misc
 Priority: optional
-Standards-Version: 3.9.5
-Build-Depends: debhelper (>= 9), dh-exec, python | python-all | python-dev | python-all-dev
+Standards-Version: 4.3.0
+Build-Depends: debhelper (>= 9), dh-exec, dh-python, python3
 
 Package: apt-find-non-downloadable
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python
+Depends: ${misc:Depends}, ${python3:Depends}, python3, python3-apt
 Description: Find non-downloadable packages.
  Find installed packages that are not downloadable via configured APT sources.

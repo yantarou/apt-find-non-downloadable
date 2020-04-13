@@ -4,7 +4,7 @@ Upstream-Contact: Jan Hilberath <jan@hilberath.de>
 Source: https://github.com/yantarou/apt-find-non-downloadable
 
 Files: *
-Copyright: 2014 Jan Hilberath <jan@hilberath.de>
+Copyright: 2014-2020 Jan Hilberath <jan@hilberath.de>
 License: GPL-2+
  This program is free software; you can redistribute it
  and/or modify it under the terms of the GNU General Public
