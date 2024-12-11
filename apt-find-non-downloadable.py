@@ -33,7 +33,8 @@ class InstalledFilter(apt.cache.Filter):
 
 def main():
     arg_parser = argparse.ArgumentParser(
-        description='Find installed packages that are not downloadable via configured APT sources.'
+        description='Find installed packages that are not downloadable via configured APT sources.',
+        prog='apt-find-non-downloadable'
     )
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("-s", "--silent", help="be silent, only print found package's names", action="store_true")
