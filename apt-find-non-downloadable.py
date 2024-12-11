@@ -37,7 +37,7 @@ def main():
         prog='apt-find-non-downloadable'
     )
     arg_parser.add_argument("-s", "--silent", help="be silent, only print found package's names", action="store_true")
-    arg_parser.add_argument('-v", "--version', action='version', version='%(prog)s ' + __version__)
+    arg_parser.add_argument("-v", "--version", action='version', version='%(prog)s ' + __version__)
     args = arg_parser.parse_args()
 
     if not args.silent:
