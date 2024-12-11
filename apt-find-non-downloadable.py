@@ -36,7 +36,6 @@ def main():
         description='Find installed packages that are not downloadable via configured APT sources.',
         prog='apt-find-non-downloadable'
     )
-    arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("-s", "--silent", help="be silent, only print found package's names", action="store_true")
     arg_parser.add_argument('-v", "--version', action='version', version='%(prog)s ' + __version__)
     args = arg_parser.parse_args()
