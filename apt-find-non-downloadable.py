@@ -40,8 +40,11 @@ def main():
     arg_parser.add_argument('-v", "--version', action='version', version='%(prog)s ' + __version__)
     args = arg_parser.parse_args()
 
+    if not args.silent:
+        print('Building APT cache (in memory)...')
     cache = apt.Cache(progress=None, rootdir=None, memonly=True)
     cache.update()
+
     cache.open(None)
     num_of_cached_packages = len(cache)
     if 0 == num_of_cached_packages:
