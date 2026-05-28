@@ -2,7 +2,7 @@
 #
 #   apt-find-non-downloadable - Find installed packages that are not downloadable via configured APT sources.
 #
-#   Copyright (C) 2014-2020   Jan Hilberath <jan@hilberath.de>
+#   Copyright (C) 2014-2026   Jan Hilberath <jan@hilberath.de>
 #
 #   This program is free software; you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -19,15 +19,18 @@
 #   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
 
-import apt
+__version__ = '0.4.0'
+
 import argparse
 import sys
 
-__version__ = '0.2.0'
+from apt import Package
+from apt.cache import LockFailedException, FetchFailedException, Filter, FilteredCache, Cache
+from loguru import logger
 
 
-class InstalledFilter(apt.cache.Filter):
-    def apply(self, pkg):
+class InstalledFilter(Filter):
+    def apply(self, pkg: Package) -> bool:
         return pkg.is_installed
 
 
@@ -40,35 +43,44 @@ def main():
     arg_parser.add_argument("-v", "--version", action='version', version='%(prog)s ' + __version__)
     args = arg_parser.parse_args()
 
-    if not args.silent:
-        print('Building APT cache (in memory)...')
-    cache = apt.Cache(progress=None, rootdir=None, memonly=True)
-    cache.update()
+    logger.remove()
+    logger.add(
+        sys.stdout,
+        colorize=True,
+        format="<level>{level: <8}</level> | <level>{message}</level>"
+    )
 
-    cache.open(None)
-    num_of_cached_packages = len(cache)
-    if 0 == num_of_cached_packages:
-        print('No cached packages found.')
-        sys.exit(1)
+    cache = Cache(progress=None, rootdir=None, memonly=True)
+    try:
+        if not args.silent:
+            logger.info('Updating APT cache (in memory)...')
+        cache.update(fetch_progress=None)
+    except (FetchFailedException, LockFailedException) as e:
+        if not args.silent:
+            logger.error(e)
+            logger.warning(f'Using outdated cache.')
+    cache.open()
 
-    filtered_cache = apt.cache.FilteredCache(cache)
+    filtered_cache = FilteredCache(cache)
     filtered_cache.set_filter(InstalledFilter())
-    num_of_filtered_packages = len(filtered_cache)
-    if 0 == num_of_filtered_packages:
-        print('No installed packages found.')
+
+    print()
+
+    # num_of_cached_packages = len(cache)
+    # if 0 == num_of_cached_packages:
+    #     logger.error('No cached packages found.')
+    #     sys.exit(1)
+
+    if not filtered_cache:
+        logger.error('No installed packages found.')
         sys.exit(1)
 
     if not args.silent:
-        print(
-            'Checking {:d} installed (of {:d} cached) packages...'.format(
-                num_of_filtered_packages,
-                num_of_cached_packages
-            )
-        )
+        logger.info(f'Checking {len(filtered_cache)} installed (of {len(cache)} cached) packages...')
 
     non_downloadable_pkgs = set()
     for pkg_name in filtered_cache.keys():
-        pkg = filtered_cache[pkg_name]
+        pkg: Package = filtered_cache[pkg_name]
         if not (pkg.installed.downloadable or pkg.candidate.downloadable):
             non_downloadable_pkgs.add(pkg)
 
@@ -80,12 +92,9 @@ def print_packages(pkgs, silent):
         for pkg in pkgs:
             print(pkg.name)
     else:
-        if 0 == len(pkgs):
+        if pkgs:
             print('')
-            print('No non-downloadable packages found.')
-        else:
-            print('')
-            print('Found {:d} non-downloadable packages:'.format(len(pkgs)))
+            logger.error(f'Found {len(pkgs)} non-downloadable packages.')
             print('')
             name_max_len = len(max(pkgs, key=lambda pkg: len(pkg.name)).name)
             installed_version_max_len = len(max(pkgs, key=lambda pkg: len(pkg.installed.version)).installed.version)
@@ -98,10 +107,14 @@ def print_packages(pkgs, silent):
                         pkg.installed.summary
                     )
                 )
+        else:
+            print('')
+            logger.info('No non-downloadable packages found.')
 
 
 if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
+        logger.info("Exiting...")
         sys.exit(10)
